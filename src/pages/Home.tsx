@@ -26,6 +26,13 @@ function Home() {
             <th>Price</th>
           </tr>
         </thead>
+        <tbody>
+          <tr>
+            <td>01/01/23</td>
+            <td>0location 1</td>
+            <td>50$</td>
+          </tr>
+        </tbody>
       </table>
     </>
   );
