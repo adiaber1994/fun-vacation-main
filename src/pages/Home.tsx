@@ -1,6 +1,30 @@
+import { useState } from "react";
 import Title from "../components/Title";
 
+interface VacationPackage {
+  id?: string;
+  date: string;
+  location: string;
+  price: number;
+}
+
+const data: Array<VacationPackage> = [
+  {
+    id: "a1",
+    date: "01/01/23",
+    location: "New York",
+    price: 1000,
+  },
+  {
+    id: "a2",
+    date: "01/01/23",
+    location: "London",
+    price: 500,
+  },
+];
+
 function Home() {
+  const [vacations, setVacations] = useState(data);
   return (
     <>
       <Title />
@@ -27,11 +51,13 @@ function Home() {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>01/01/23</td>
-            <td>0location 1</td>
-            <td>50$</td>
-          </tr>
+          {vacations.map((vacation) => (
+            <tr key={vacation.id}>
+              <td>{vacation.date}</td>
+              <td>{vacation.location}</td>
+              <td>{vacation.price}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </>
