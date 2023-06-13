@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import Title from "../components/Title";
 
 interface VacationPackage {
@@ -6,6 +6,11 @@ interface VacationPackage {
   date: string;
   location: string;
   price: number;
+}
+
+enum SortDirection {
+  asc = "asc", //A-Z
+  desc = "desc", //Z-A
 }
 
 const data: Array<VacationPackage> = [
@@ -21,10 +26,48 @@ const data: Array<VacationPackage> = [
     location: "London",
     price: 500,
   },
+
+  {
+    id: "a3",
+    date: "01/01/23",
+    location: "Ibiza",
+    price: 400,
+  },
 ];
 
 function Home() {
   const [vacations, setVacations] = useState(data);
+  const [sort, setSort] = useState(SortDirection.asc);
+  const [search, setSearch] = useState("");
+
+  function handlSort(e: ChangeEvent<HTMLSelectElement>) {
+    const direction = e.target.value as SortDirection;
+    setSort(direction);
+
+    let result = [...data];
+    if (direction === SortDirection.desc) {
+      result.sort((a, b) =>
+        a.location > b.location ? -1 : a.location < b.location ? 1 : 0
+      );
+    } else {
+      result.sort((a, b) =>
+        a.location < b.location ? -1 : a.location > b.location ? 1 : 0
+      );
+    }
+
+    setVacations(result);
+  }
+
+  function handleSearch(e: ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value;
+    setSearch(value);
+
+    const term = value.toLowerCase();
+    const result = data.filter((vacation) =>
+      vacation.location.toLocaleLowerCase().includes(term)
+    );
+    setVacations(result);
+  }
   return (
     <>
       <Title />
@@ -32,13 +75,16 @@ function Home() {
         <div>
           <input
             type="text"
-            placeholder="Serch"
+            placeholder="Search"
             className="form-control me-4"
+            value={search}
+            onChange={handleSearch}
           />
         </div>
         <div>
-          <select className="form-select">
-            <option>--</option>
+          <select className="form-select" value={sort} onChange={handlSort}>
+            <option value={SortDirection.asc}>location A-Z</option>
+            <option value={SortDirection.desc}>location Z-A</option>
           </select>
         </div>
       </div>
