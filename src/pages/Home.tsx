@@ -1,8 +1,8 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import Title from "../components/Title";
 
-interface VacationPackage {
-  id?: string;
+export interface VacationPackage {
+  _id?: string;
   date: string;
   location: string;
   price: number;
@@ -15,20 +15,20 @@ enum SortDirection {
 
 const data: Array<VacationPackage> = [
   {
-    id: "a1",
+    _id: "a1",
     date: "01/01/23",
     location: "New York",
     price: 1000,
   },
   {
-    id: "a2",
+    _id: "a2",
     date: "01/01/23",
     location: "London",
     price: 500,
   },
 
   {
-    id: "a3",
+    _id: "a3",
     date: "01/01/23",
     location: "Ibiza",
     price: 400,
@@ -36,9 +36,15 @@ const data: Array<VacationPackage> = [
 ];
 
 function Home() {
-  const [vacations, setVacations] = useState(data);
+  const [vacations, setVacations] = useState<Array<VacationPackage>>([]);
   const [sort, setSort] = useState(SortDirection.asc);
   const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    fetch("http://localhost:3000/vacations")
+      .then((res) => res.json())
+      .then((json) => console.log(json));
+  }, []);
 
   function handlSort(e: ChangeEvent<HTMLSelectElement>) {
     const direction = e.target.value as SortDirection;
@@ -68,9 +74,13 @@ function Home() {
     );
     setVacations(result);
   }
+
+  // function formatDate() {
+  //   return new Date(valu).toLocaleDateString();
+  // }
   return (
     <>
-      <Title />
+      <Title mainText="Our Offers" subText="our packages for vacations" />
       <div className="d-flex">
         <div>
           <input
@@ -79,10 +89,16 @@ function Home() {
             className="form-control me-4"
             value={search}
             onChange={handleSearch}
+            disabled={vacations.length === 0}
           />
         </div>
         <div>
-          <select className="form-select" value={sort} onChange={handlSort}>
+          <select
+            className="form-select"
+            value={sort}
+            onChange={handlSort}
+            disabled={vacations.length === 0}
+          >
             <option value={SortDirection.asc}>location A-Z</option>
             <option value={SortDirection.desc}>location Z-A</option>
           </select>
@@ -98,7 +114,7 @@ function Home() {
         </thead>
         <tbody>
           {vacations.map((vacation) => (
-            <tr key={vacation.id}>
+            <tr key={vacation._id}>
               <td>{vacation.date}</td>
               <td>{vacation.location}</td>
               <td>{vacation.price}</td>

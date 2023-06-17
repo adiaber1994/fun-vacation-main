@@ -1,8 +1,13 @@
-function Title() {
+interface Prpos {
+  mainText: string;
+  subText?: string;
+}
+
+function Title({ mainText, subText }: Prpos) {
   return (
     <h2 className="text-center my-3 display-3">
-      Our Offers <br />
-      <small className="text-muted"> our packages for this month</small>
+      {mainText} <br />
+      <small className="text-muted">{subText} </small>
     </h2>
   );
 }
